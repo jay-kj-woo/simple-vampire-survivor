@@ -22,6 +22,8 @@ export default defineConfig({
       '@assets': path.resolve(root, './public/assets'),
       '@scenes': path.resolve(root, './src/scenes'),
       '@config': path.resolve(root, './src/config'),
+      '@characters': path.resolve(root, './src/characters'),
+      '@utils': path.resolve(root, './src/utils'),
     },
   },
   assetsInclude: ['**/*.xml'],

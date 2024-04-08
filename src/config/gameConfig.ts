@@ -1,15 +1,21 @@
+import { Game } from '@scenes/Game';
 import Loading from '@scenes/Loading';
 import { Types } from 'phaser';
+
+export const CONFIG = {
+  width: 800,
+  height: 600,
+} as const;
 
 const Config: Types.Core.GameConfig = {
   parent: 'game-container',
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: CONFIG.width,
+  height: CONFIG.height,
   backgroundColor: '#028af8',
 
   // 사용할 scene은 config의 scene 프로퍼티의 배열에 추가해줘야 합니다.
-  scene: [Loading],
+  scene: [Loading, Game],
 
   // pixelArt를 사용할 경우 pixelArt: true로 설정해야 선명하게 보입니다.
   pixelArt: true,

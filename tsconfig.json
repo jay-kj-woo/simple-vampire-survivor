@@ -21,7 +21,9 @@
     "paths": {
       "@assets/*": ["./public/assets/*"],
       "@scenes/*": ["./src/scenes/*"],
-      "@config/*": ["./src/config/*"]
+      "@config/*": ["./src/config/*"],
+      "@characters/*": ["./src/characters/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   },
 
