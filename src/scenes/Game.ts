@@ -1,7 +1,7 @@
 import Player from '@characters/Player';
 import { ASSET_KEYS } from '@config/assetKeys';
 import { SCENE_KEYS } from '@config/sceneKeys';
-import { Scene, Sound } from 'phaser';
+import { Scene, Sound, Types } from 'phaser';
 import { setBackground } from '@utils/backgroundManager';
 
 export class Game extends Scene {
@@ -18,6 +18,7 @@ export class Game extends Scene {
   gameClearSound: Sound.BaseSound;
   pauseInSound: Sound.BaseSound;
   pauseOutSound: Sound.BaseSound;
+  cursorKeys: Types.Input.Keyboard.CursorKeys | null;
 
   constructor() {
     super(SCENE_KEYS.game);
@@ -47,6 +48,42 @@ export class Game extends Scene {
 
     // PlayingScene의 background를 설정합니다.
     setBackground(this, ASSET_KEYS.images.background1);
+
+    // set keyboard cursor keys
+    this.cursorKeys = this.input.keyboard?.createCursorKeys() || null;
+  }
+
+  update() {
+    this.movePlayer();
+  }
+
+  movePlayer() {
+    if (!this.cursorKeys) {
+      return;
+    }
+    const player = this.player;
+    const { left, right, up, down } = this.cursorKeys;
+    if (left.isDown || right.isDown || up.isDown || down.isDown) {
+      player.play(ASSET_KEYS.anims.player, true);
+    } else {
+      player.play(ASSET_KEYS.anims.playerIdle, true);
+      player.setVector({ x: 0, y: 0 });
+    }
+
+    player.setVector({ x: 0, y: 0 });
+
+    if (left.isDown) {
+      player.setVector({ x: -1, y: player.vector.y });
+    } else if (right.isDown) {
+      player.setVector({ x: 1, y: player.vector.y });
+    }
+    if (up.isDown) {
+      player.setVector({ x: player.vector.x, y: -1 });
+    } else if (down.isDown) {
+      player.setVector({ x: player.vector.x, y: 1 });
+    }
+
+    player.move();
   }
 
   addPlayer(player: Player) {
