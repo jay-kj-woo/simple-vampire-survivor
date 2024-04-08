@@ -1,10 +1,12 @@
 import Player from '@characters/Player';
 import { ASSET_KEYS } from '@config/assetKeys';
 import { SCENE_KEYS } from '@config/sceneKeys';
-import { Scene, Sound, Types } from 'phaser';
+import { GameObjects, Scene, Sound, Types } from 'phaser';
 import { setBackground } from '@utils/backgroundManager';
+import { CONFIG } from '@config/gameConfig';
 
 export class Game extends Scene {
+  background: GameObjects.TileSprite;
   player: Player;
   beamSound: Sound.BaseSound;
   scratchSound: Sound.BaseSound;
@@ -47,14 +49,19 @@ export class Game extends Scene {
     this.addPlayer(this.player);
 
     // PlayingScene의 background를 설정합니다.
-    setBackground(this, ASSET_KEYS.images.background1);
+    this.addBackground();
 
     // set keyboard cursor keys
     this.cursorKeys = this.input.keyboard?.createCursorKeys() || null;
   }
 
+  addBackground() {
+    this.background = setBackground(this, ASSET_KEYS.images.background1);
+  }
+
   update() {
     this.movePlayer();
+    this.followCameraOnPlayer();
   }
 
   movePlayer() {
@@ -84,6 +91,14 @@ export class Game extends Scene {
     }
 
     player.move();
+  }
+
+  followCameraOnPlayer() {
+    this.cameras.main.startFollow(this.player);
+    this.background.setX(this.player.x - CONFIG.width / 2);
+    this.background.setY(this.player.y - CONFIG.height / 2);
+    this.background.tilePositionX = this.player.x - CONFIG.width / 2;
+    this.background.tilePositionY = this.player.y - CONFIG.height / 2;
   }
 
   addPlayer(player: Player) {
