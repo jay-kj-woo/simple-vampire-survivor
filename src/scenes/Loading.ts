@@ -116,7 +116,7 @@ export default class Loading extends Scene {
 
   create() {
     this.add.text(20, 20, 'Loading game...');
-    // this.scene.start(SCENE_KEYS.game);
+    this.scene.start(SCENE_KEYS.game);
 
     // MOBS
     this.anims.create({
