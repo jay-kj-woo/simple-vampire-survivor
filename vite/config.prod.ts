@@ -44,8 +44,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@assets': path.resolve(root, './public/assets'),
+      '@scenes': path.resolve(root, './src/scenes'),
+      '@config': path.resolve(root, './src/config'),
     },
   },
+  assetsInclude: ['**/*.xml'],
   server: {
     port: 8080,
   },
