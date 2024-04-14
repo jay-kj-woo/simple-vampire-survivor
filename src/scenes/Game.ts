@@ -1,13 +1,17 @@
 import Player from '@characters/Player';
 import { ASSET_KEYS } from '@config/assetKeys';
 import { SCENE_KEYS } from '@config/sceneKeys';
-import { GameObjects, Scene, Sound, Types } from 'phaser';
+import { GameObjects, Physics, Scene, Sound, Types } from 'phaser';
 import { setBackground } from '@utils/backgroundManager';
 import { CONFIG } from '@config/gameConfig';
+import Mob from '@characters/Mob';
+import { populateMobs } from '@utils/mobsManager';
 
 export class Game extends Scene {
   background: GameObjects.TileSprite;
   player: Player;
+  mobs: Physics.Arcade.Group;
+  mobsEvents: Phaser.Time.TimerEvent[];
   beamSound: Sound.BaseSound;
   scratchSound: Sound.BaseSound;
   hitMobSound: Sound.BaseSound;
@@ -53,6 +57,15 @@ export class Game extends Scene {
 
     // set keyboard cursor keys
     this.cursorKeys = this.input.keyboard?.createCursorKeys() || null;
+
+    this.mobs = this.physics.add.group();
+    const timer = populateMobs({
+      scene: this,
+      center: { x: this.player.x, y: this.player.y },
+      id: 'mob1',
+      repeatRate: 1000,
+    });
+    this.mobsEvents = [timer];
   }
 
   addBackground() {
@@ -62,6 +75,7 @@ export class Game extends Scene {
   update() {
     this.movePlayer();
     this.followCameraOnPlayer();
+    this.moveMobs();
   }
 
   movePlayer() {
@@ -105,5 +119,19 @@ export class Game extends Scene {
     this.add.existing(player);
     this.physics.add.existing(player);
     player.setPlayerPhysics();
+  }
+
+  addMob(mob: Mob) {
+    this.add.existing(mob);
+    this.physics.add.existing(mob);
+    mob.setMobPhysics();
+    this.mobs.add(mob);
+  }
+
+  moveMobs() {
+    (this.mobs.getChildren() as Mob[]).forEach((mob) => {
+      mob.facePlayer(this.player);
+      mob.moveToPlayer(this, this.player);
+    });
   }
 }
